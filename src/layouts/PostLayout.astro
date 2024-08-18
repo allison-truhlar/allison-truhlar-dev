@@ -5,8 +5,7 @@ import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 
 export interface Props extends NoteSchema {}
-
-const base = import.meta.env.BASE_URL;
+import { Image } from "astro:assets";
 
 const {
   title,
@@ -19,7 +18,7 @@ const {
 } = Astro.props;
 dayjs.extend(localizedFormat);
 const displayDate = dayjs(pubDate).format("ll");
-import { Image } from "astro:assets";
+const base = import.meta.env.BASE_URL;
 ---
 
 <BaseLayout
