@@ -1,8 +1,7 @@
 {
-  "name": "users-truhlara-dev-allison-truhlar-dev",
-  "description": "Astrofy is a free and open-source template for your Personal Portfolio Website built with Astro and TailwindCSS. Create in minutes a website with Blog, CV, Project Section, Store and RSS Feed.",
+  "name": "allison-truhlar-dev",
+  "description": "Allison Truhlar's developer portfolio, built using the Astrofy template.",
   "type": "module",
-  "version": "3.0.0",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",

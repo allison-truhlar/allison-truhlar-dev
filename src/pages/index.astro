@@ -60,21 +60,21 @@ const last_posts = posts.slice(0, 3);
 
   <HorizontalCard
     title="Janelia Open Source Science website"
-    img="/project_ossi.png"
+    img=`${base}/project_ossi.png`
     desc="A portfolio site built with Astro and React to showcase software developed at the Janelia Research Campus."
     url="https://ossi.janelia.org"
   />
   <div class="divider my-0"></div>
   <HorizontalCard
     title="Demo Project 2"
-    img="/post_img.webp"
+    img=`${base}/post_img.webp`
     desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
     url="#"
   />
   <div class="divider my-0"></div>
   <HorizontalCard
     title="Demo Project 3"
-    img="/post_img.webp"
+    img=`${base}/post_img.webp`
     desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
     url="#"
   />
@@ -90,7 +90,7 @@ const last_posts = posts.slice(0, 3);
       <>
         <HorizontalCard
           title={post.data.title}
-          img={post.data.heroImage}
+          img={base + post.data.heroImage}
           desc={post.data.description}
           url={base + "/notes/" + createSlug(post.data.title, post.slug)}
           target="_self"
