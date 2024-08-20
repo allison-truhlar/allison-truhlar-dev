@@ -71,3 +71,22 @@ Stash specific files: `git stash push <FILEPATH>`
    `git push -u origin main`
 
 [Source](https://docs.github.com/en/migrations/importing-source-code/using-the-command-line-to-import-source-code/adding-locally-hosted-code-to-github)
+
+### Configure the user name and email for your commits
+
+The use case I had for this is wanting to have one GitHub account, but commit to personal projects from my personal email associated with the account and commit to my work projects from my work email associated with the account.
+
+**For a single repo:**
+Navigate to the repo in the terminal, then use these commands:
+`git config --local user.name "Your GH user name"`
+`git config --local user.email "Email associated with your GH account"`
+
+**For all repos on a user account on your machine:**
+Note - will be overridden by repo-specific (local) git config settings
+`git config --gloabl user.name "Your GH user name"`
+`git config --global user.email "Email associated with your GH account"`
+
+**To check settings for a repo:**
+Navigate to the repo in the terminal, then use these commands:
+`git config user.name`
+`git config user.email`
