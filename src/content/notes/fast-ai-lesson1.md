@@ -4,7 +4,7 @@ description: "My key takeaways and other notes"
 pubDate: "Aug 26 2024"
 updatedDate: "Aug 26 2024"
 heroImage: "/post_img.webp"
-tags: ["ai/ml", "learning in public"]
+tags: ["AI", "Learning in public"]
 ---
 
 # My key takeaways so far:
