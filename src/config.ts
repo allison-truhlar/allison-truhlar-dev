@@ -4,4 +4,4 @@
 export const SITE_TITLE = "Allison Truhlar";
 export const SITE_DESCRIPTION = "Web development projects and notes";
 export const GENERATE_SLUG_FROM_TITLE = true;
-export const TRANSITION_API = true;
+export const TRANSITION_API = false;
