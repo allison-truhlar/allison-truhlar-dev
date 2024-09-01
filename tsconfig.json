@@ -2,7 +2,7 @@
   "extends": "astro/tsconfigs/base",
   "compilerOptions": {
     "strictNullChecks": true,
-    "baseUrl": "allison-truhlar-dev",
+    "baseUrl": ".",
     "paths": {
       "@components/*": [
         "src/components/*"
