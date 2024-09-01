@@ -1,20 +1,21 @@
 ---
-import { type NoteSchema } from "../content/config";
+import { type ProjectSchema } from "../content/config";
 import BaseLayout from "./BaseLayout.astro";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 
-export interface Props extends NoteSchema {}
+export interface Props extends ProjectSchema {}
 import { Image } from "astro:assets";
 
 const {
   title,
   description,
   pubDate,
-  updatedDate,
   heroImage,
-  badge,
-  tags = [],
+  updatedDate,
+  url,
+  urlText,
+  githubRepo,
 } = Astro.props;
 dayjs.extend(localizedFormat);
 const displayPubDate = dayjs(pubDate).format("ll");
@@ -45,7 +46,7 @@ const base = import.meta.env.BASE_URL;
       <h1 class="title my-2 text-4xl font-bold">{title}</h1>
       {pubDate && <time>{displayPubDate}</time>}
       <br />
-      {badge && <div class="badge badge-secondary my-1">{badge}</div>}
+      <!-- {badge && <div class="badge badge-secondary my-1">{badge}</div>}
       {
         tags &&
           tags.map((tag) => (
@@ -56,7 +57,7 @@ const base = import.meta.env.BASE_URL;
               {tag}
             </a>
           ))
-      }
+      } -->
       {
         updatedDate && (
           <div>

@@ -1,0 +1,41 @@
+---
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import type { ProjectSchema } from "../../content/config";
+
+import ProjectLayout from "../../layouts/ProjectLayout.astro";
+
+// Implementation of Astro getStaticPaths() function, required for dynamic
+// routes. Defines all paths at build time, in this case, for individual 
+// projects in the "projects" content collection
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  return projects.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<"projects">;
+}
+
+const { entry } = Astro.props;
+const project: ProjectSchema = entry.data;
+const { Content } = await entry.render();
+const base = import.meta.env.BASE_URL;
+---
+
+<ProjectLayout
+  title={project.title}
+  description={project.description}
+  pubDate={project.pubDate}
+  heroImage={base + "/" + project.heroImage}
+  updatedDate={project.updatedDate}
+  url={project.url}
+  urlText={project.urlText}
+  githubRepo={project.githubRepo}
+
+>
+  <Content />
+</ProjectLayout>
