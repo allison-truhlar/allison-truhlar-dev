@@ -3,7 +3,7 @@ title: "Getting started with Astro"
 description: "Set up a project and learn about content collections"
 pubDate: "Aug 18 2024"
 heroImage: "/post_img.webp"
-tags: ["Astro"]
+tags: ["astro"]
 ---
 
 # Start an Astro project

@@ -3,7 +3,7 @@ title: "Git"
 description: "Working with Git in the command line"
 pubDate: "Aug 18 2024"
 heroImage: "/post_img.webp"
-tags: ["reference"]
+tags: ["reference", "git"]
 ---
 
 ## I want to...

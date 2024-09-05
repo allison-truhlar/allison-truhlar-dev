@@ -3,7 +3,7 @@ title: "Conda"
 description: "Working with Conda Python environments in the command line"
 pubDate: "Aug 18 2024"
 heroImage: "/post_img.webp"
-tags: ["reference"]
+tags: ["reference", "python"]
 ---
 
 ## I want to:

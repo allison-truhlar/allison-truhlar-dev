@@ -3,7 +3,7 @@ title: "How to filter Astro content collections by multiple tags"
 description: "A method using Nano Stores"
 pubDate: "Aug 18 2024"
 heroImage: "/post_img.webp"
-tags: ["Astro"]
+tags: ["astro"]
 ---
 
 Filtering by tags was one of the main requirements for the OSSI website that led me to choose Astro. While it is a static site generator, Astro allows you to add interactive UI components through a frontend architecture called "islands." Islands build on the technique of partial or selective hydration. At built time, Astro automatically strips out client-side JavaScript and renders all components to static HTML and CSS on the server. However, the developer can mark a component as an island by adding a `client:*` directive to the component. The `client:*` directive tells Astro to bundle the JavaScript found in that component, and also provides instructions about when that JavaScript should be loaded (aka, when the component should be "hydrated"). The benefit to islands is faster loading, because most of the website is static HTML, as well as the ability to have parallel loading for components. You can even tell Astro to never load the JavaScript for a component if it doesn't become visible on the page.
