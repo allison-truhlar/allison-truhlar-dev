@@ -4,7 +4,7 @@ description: "A method using a statically generated endpoint and Nano Stores."
 pubDate: "Aug 18 2024"
 heroImage: "/post_img.webp"
 badge: "Demo badge"
-tags: ["Astro"]
+tags: ["astro"]
 ---
 
 Keyword search was built using the FuseJS package and relies on a couple of features of Astro and Nano Stores.
