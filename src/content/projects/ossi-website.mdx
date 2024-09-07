@@ -1,0 +1,44 @@
+---
+title: "Janelia Open Source Science Intiative website"
+description: The Janelia Open Source Science Initiative (OSSI) website portfolio showcases software developed at the Howard Hughes Medical Institute’s Janelia Research Campus. I designed the site with Figma and built the site with AstroJS, incorporating React components for user interactivity, Nano Stores for state management, and Tailwind for styling.
+updatedDate: "Sep 7 2024"
+heroImage: "/project_ossi.png"
+url: https://ossi.janelia.org
+urlText: Janelia Open Source Science Intiative
+githubRepo: https://github.com/JaneliaSciComp/ossi-website
+---
+import { Image } from 'astro:assets';
+import projectPageDark from '../../assets/project-page-dark.png'
+import projectPageLight from '../../assets/project-page-light.png'
+
+### Purpose and Goal 
+The original proposal for the site was developed by software engineers at the Howard Hughes Medical Institute’s Janelia Research Campus (referred to here as "Janelia") who wanted to make open source software developed at Janelia more easily discoverable for both internal and external scientific audiences.
+
+### Core requirements
+-	Open source the site content - any Janelia software developer or collaborator should be able to edit the site via a GitHub pull request.
+-	Support exploration of the software catalogue – include functionality for filtering by one or more tags and a keyword search that can be optionally combined with filters. 
+-	Convey Janelia’s technical excellence with a modern website design.
+
+To achieve the first core requirement, the proposal for the site specified it should be built with a static site generator. I selected AstroJS for its use of “island” architecture, which allows the integration of interactive components from any major JavaScript framework, and for its wide array of templates and plug-ins that allow you to customize the look and feel of the site.
+
+### Spotlight: Filtering the project card display by one or more tags
+<Image
+    src={projectPageDark}
+    alt="Screenshot of the project page. At the top is the navigation bar with links to home, projects, and OSSI, and a theme toggle button. Beneath this, on the left, is a keyword search input. To the right of this are buttons to filter by OSSI funding status. Beneath the keyword search input is a menu of tags by which to filter projects. Finally, to the right of the filter menu and beneath the funding status buttons, are two project cards."
+    class="hidden dark:block"
+/>
+<Image
+    src={projectPageLight}
+    alt="Screenshot of the project page. At the top is the navigation bar with links to home, projects, and OSSI, and a theme toggle button. Beneath this, on the left, is a keyword search input. To the right of this are buttons to filter by OSSI funding status. Beneath the keyword search input is a menu of tags by which to filter projects. Finally, to the right of the filter menu and beneath the funding status buttons, are two project cards."
+    class="block dark:hidden"
+/>
+Implementing this core feature required overcoming several technical hurdles: 
+
+#### Astro islands and state management
+AstroJS strips the JavaScript out of all components of the site except for “island” components. This means the parent of React island components, like my interactive filter menu and project cards, does not have access to the React framework library to use state management hooks. To overcome this, I initially made the project cards and filter menu both children of one giant React component rendered on the projects route layout. This allowed me to manage state with the familiar useState hook. However, it also resulted in a prop-drilling and hid the specifics of the route layout behind one component. I ultimately refactored the layout to make the filter menu and project cards direct children components of the static projects route. This meant implementing the Nano Stores library, recommended by Astro, for state management.
+
+#### Linting of tags via GitHub actions
+Due to the site being open source, I needed to add a means of ensuring all the tags added by contributors matched those allowed on the site. I decided to add a GitHub action to automate this process and ensure higher accuracy than human review. When a pull request is opened against the main branch of the site, the action checks for any modified Markdown files and then lints the tag categories included in the file frontmatter. If invalid tags are found, the action returns a message to the pull request with the invalid tags and in which files they were found. The developer can then push changes to the pull request prior to it being accepted for merging. 
+
+### Current status
+The site is currently deployed as the home page for the Janelia Open Source Science Initiative (OSSI) (https://ossi.janelia.org). Users have shared positive feedback, for example stating that the site "is both beautiful and so useful."
