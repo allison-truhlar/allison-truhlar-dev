@@ -10,7 +10,6 @@ import { Image } from "astro:assets";
 const {
   title,
   description,
-  pubDate,
   heroImage,
   updatedDate,
   url,
@@ -18,7 +17,6 @@ const {
   githubRepo,
 } = Astro.props;
 dayjs.extend(localizedFormat);
-const displayPubDate = dayjs(pubDate).format("ll");
 const displayUpdatedDate = dayjs(updatedDate).format("ll")
 const base = import.meta.env.BASE_URL;
 ---
@@ -43,31 +41,14 @@ const base = import.meta.env.BASE_URL;
           />
         )
       }
-      <h1 class="title my-2 text-4xl font-bold">{title}</h1>
-      {pubDate && <time>{displayPubDate}</time>}
-      <br />
-      <!-- {badge && <div class="badge badge-secondary my-1">{badge}</div>}
-      {
-        tags &&
-          tags.map((tag) => (
-            <a
-              href={`${base}/notes/tag/${tag}`}
-              class="badge badge-outline ml-2 no-underline"
-            >
-              {tag}
-            </a>
-          ))
-      } -->
-      {
-        updatedDate && (
-          <div>
-            {" "}
-            Last updated on <time>{displayUpdatedDate}</time>{" "}
-          </div>
-        )
-      }
-      <div class="divider my-2"></div>
+      <h1 class="title mt-12 text-4xl font-bold">{title}</h1>
+      
+      <p>{description}</p>
+      <div class="flex gap-2 mb-12"><a href={url} class="btn btn-primary">Live site</a>
+        <a href={githubRepo} class="btn btn-secondary">Source code</a></div>
+      <div class="divider"></div>
       <slot />
+      {displayUpdatedDate && <time class="text-xs">Last updated: {displayUpdatedDate}</time>}
     </article>
   </main>
 </BaseLayout>
