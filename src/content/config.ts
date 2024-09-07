@@ -17,8 +17,7 @@ const noteSchema = z.object({
 const projectSchema = z.object({
   title: z.string(),
   description: z.string(),
-  pubDate: z.coerce.date(),
-  updatedDate: z.coerce.date().optional(),
+  updatedDate: z.coerce.date(),
   heroImage: z.string().optional(),
   url: z.string().optional(),
   urlText: z.string().optional(),

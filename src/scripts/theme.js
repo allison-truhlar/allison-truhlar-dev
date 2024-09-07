@@ -2,6 +2,11 @@ const darkTheme = "night";
 const lightTheme = "garden";
 
 function applyTheme(theme) {
+  if (theme == darkTheme){
+    document.documentElement.classList.add('dark')
+  } else if (theme == lightTheme){
+    document.documentElement.classList.remove('dark')
+  }
   document.documentElement.setAttribute("data-theme", theme);
   const themeController = document.querySelector(".theme-controller");
   if (themeController) {
