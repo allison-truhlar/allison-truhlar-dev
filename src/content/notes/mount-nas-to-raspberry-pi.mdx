@@ -29,34 +29,56 @@ I have a Docker container on a Raspberry Pi that is running ROS (Robot Operating
 ### Step 2: Set up your pi
 
 - Make sure needed utilities are installed. Do this outside the Docker container, if you are using one.
-  `sudo apt install cifs-utils nfs-common`
+  ```
+  sudo apt install cifs-utils nfs-common
+  ```
 
 - Make the directory where the network folder from the NAS will be mounted. Note: you don't have to use `mnt/synology` as your mount point.
-  `sudo mkdir -p /mnt/synology`
+  ```
+  sudo mkdir -p /mnt/synology
+  ```
 
 ### Step 3: Find the share name and test mounting it on the pi
 
 - Find available NSF shares:
-  `showmount -e synology_ip_or_hostname`
+  ```
+  showmount -e synology_ip_or_hostname
+  ```
 - Test mounting the Synology share:
-  `sudo mount -t nfs synology_ip_or_hostname:/share_name /mnt/synology`
+  ```
+  sudo mount -t nfs synology_ip_or_hostname:/share_name /mnt/synology
+  ```
   In my case, my command looked like this:
-  `sudo mount -t nfs synology_ip:/volume1/wormbot /mnt/synology`
+  ```
+  sudo mount -t nfs synology_ip:/volume1/wormbot /mnt/synology
+  ```
 
 ### Step 4: Auto-mount the share to make the mount persist across reboots
 
 - Open the `fstab` file in nano or your editor of choice.
-  `sudo nano /etc/fstab`
+  ```
+  sudo nano /etc/fstab
+  ```
 - Add this line to the file and save.
-  `synology_ip_or_hostname:/share_name /mnt/synology nfs defaults 0 0`
+  ```
+  synology_ip_or_hostname:/share_name /mnt/synology nfs defaults 0 0
+  ```
 - Mount the share with `fstab`.
-  `sudo mount -a`
+  ```
+  sudo mount -a
+  ```
 - Check the share was mounted.
-  `df -h`
+  ```
+  df -h
+  ```
 - Reboot.
-  `sudo reboot`
+  ```
+  sudo reboot
+  ```
 - Confirm that the share mounts automatically on reboot.
-  `df -h`
+  ```
+  df -h
+  ```
 
 Now you can use the NAS file system like it's a file system on your Raspberry Pi.
 
