@@ -1,0 +1,67 @@
+---
+title: "How to connect a Raspberry Pi to a Synology NAS"
+description: "Documents how to use NFS to transfer files from a Raspberry Pi to a Synology NAS. Includes instructions for using a in Docker container."
+pubDate: "Jan 15 2025"
+heroImage: "/post_img.webp"
+tags: ["learning in public", "docker", "raspberry pi"]
+---
+
+## Use case
+
+I have a Docker container on a Raspberry Pi that is running ROS (Robot Operating System) and PiCamera2 to receive messages from a web app to take images using a camera installed on the pi. I wanted to be able to transfer the images off the Raspberry Pi onto a Synology NAS (Network Attached Storage).
+
+## How to connect a Raspberry Pi and Synology NAS via NFS
+
+### Step 1: Ensure NFS (Network File System) is enabled on the NAS.
+
+- NFS is a file system protocol that allows users to access files on remote computers as if they were local.
+- In the NAS control panel, navigate to "File Services", then "NFS." Make sure "Enable NFS" is checked.
+
+[img]
+
+### Step 2: Set up your pi
+
+- Make sure needed utilities are installed. Do this outside the Docker container, if you are using one.
+  `sudo apt install cifs-utils nfs-common`
+
+- Make the directory where the network folder from the NAS will be mounted. Note: you don't have to use `mnt/synology` as your mount point.
+  `sudo mkdir -p /mnt/synology`
+
+### Step 3: Find the share name and test mounting it on the pi
+
+- Find available NSF shares:
+  `showmount -e synology_ip_or_hostname`
+- Test mounting the Synology share:
+  `sudo mount -t nfs synology_ip_or_hostname:/share_name /mnt/synology`
+  In my case, my command looked like this:
+  `sudo mount -t nfs synology_ip:/volume1/wormbot /mnt/synology`
+
+### Step 4: Auto-mount the share to make the mount persist across reboots
+
+- Open the `fstab` file in nano or your editor of choice.
+  `sudo nano /etc/fstab`
+- Add this line to the file and save.
+  `synology_ip_or_hostname:/share_name /mnt/synology nfs defaults 0 0`
+- Mount the share with `fstab`.
+  `sudo mount -a`
+- Check the share was mounted.
+  `df -h`
+- Reboot.
+  `sudo reboot`
+- Confirm that the share mounts automatically on reboot.
+  `df -h`
+
+Now you can use the NAS file system like it's a file system on your Raspberry Pi.
+
+## How to mount the NAS file system in a Docker container
+
+Now that your NAS file system is connected to your Raspberry Pi via NFS, there is only one more step to be able to transfer files from inside your Docker container directly to the NAS.
+
+In your `docker-compose.yml` file, add this to the `volumes` section:
+
+```
+volumes:
+      - /mnt/synology:/mnt/synology
+```
+
+Now any files placed in `/mnt/synology` in your Docker container will also be added to your Synology NAS! Pretty cool.
