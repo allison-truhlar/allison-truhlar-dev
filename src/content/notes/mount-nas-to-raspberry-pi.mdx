@@ -6,6 +6,9 @@ heroImage: "/post_img.webp"
 tags: ["learning in public", "docker", "raspberry pi"]
 ---
 
+import { Image } from 'astro:assets';
+import nasControlPanelImg from '../../assets/img/Synology-control-panel-NFS.png'
+
 ## Use case
 
 I have a Docker container on a Raspberry Pi that is running ROS (Robot Operating System) and PiCamera2 to receive messages from a web app to take images using a camera installed on the pi. I wanted to be able to transfer the images off the Raspberry Pi onto a Synology NAS (Network Attached Storage).
@@ -17,7 +20,11 @@ I have a Docker container on a Raspberry Pi that is running ROS (Robot Operating
 - NFS is a file system protocol that allows users to access files on remote computers as if they were local.
 - In the NAS control panel, navigate to "File Services", then "NFS." Make sure "Enable NFS" is checked.
 
-[img]
+<Image
+    src={nasControlPanelImg}
+    alt="Screenshot of the Synology control panel showing where the NFS settings are found under File Sharing, File Services"
+    class="block"
+/>
 
 ### Step 2: Set up your pi
 
