@@ -1,0 +1,324 @@
+---
+title: "How to make a JupyterLab extension"
+description: "Documents creating a basic JupyterLab extension with React integration."
+pubDate: "Jan 17 2025"
+heroImage: "/post_img.webp"
+tags: ["learning in public", "python"]
+---
+
+import { Image } from "astro:assets";
+import nasControlPanelImg from "../../assets/img/Synology-control-panel-NFS.png";
+
+<Image
+  src={nasControlPanelImg}
+  alt="Screenshot of the Synology control panel showing where the NFS settings are found under File Sharing, File Services"
+  class="block"
+/>
+
+## How make a JupyterLab extension
+
+Follows the instructions in the [JupyterLab extension examples GitHub repo](https://github.com/jupyterlab/extension-examples).
+
+Prerequisites:
+
+- Conda installed on your computer - follow the instructions in the [miniforge repo](https://github.com/conda-forge/miniforge?tab=readme-ov-file#install), if needed, for a minimal installation
+
+### Step 1: Create a Conda environment for the extension
+
+- In the directory for your extension, create a `environment.yml` file with the following contents:
+
+```bash
+# environment.yml
+name: jupyterlab_extension
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - jupyterlab >=4.3.0
+  - nodejs=22
+  - pytest
+  - pytest-check-links
+  - pytest-jupyter >=0.6.0
+  - python=3
+  - pip
+  - pip:
+      - copier~=9.2
+      - jinja2-time
+```
+
+- Create and activate the environment.
+
+```bash
+# Run this inside the directory with the environment.yml file
+conda env create
+conda activate jupyterlab_extension
+```
+
+### Step 2: Complete and fill out the extension template
+
+- In the same directory, copy the JupyterLab extension template:
+
+```bash
+copier copy --trust https://github.com/jupyterlab/extension-template .
+```
+
+- Fill out the prompts in the terminal. For example:
+
+```bash
+🎤 What is your extension kind?
+   frontend
+🎤 Extension author name
+   author-name
+🎤 Extension author email
+   (optional)
+🎤 JavaScript package name
+   frontend-ext
+🎤 Python package name
+   frontend_ext
+🎤 Extension short description
+   A JupyterLab extension.
+🎤 Does the extension have user settings or schema-defined UI elements?
+   No
+🎤 Do you want to set up Binder example?
+   Yes
+🎤 Do you want to set up tests for the extension?
+   Yes
+🎤 Git remote repository URL
+   (optional)
+```
+
+### Step 3: Install your extension for development
+
+- Install the extension in development mode.
+
+```bash
+pip install -e .
+```
+
+- Link the development version of the extension with JupyterLab.
+
+```bash
+jupyter labextension develop . --overwrite
+```
+
+- Compile the extension in watch mode. This will automatically compile the extension when you make changes to the source code.
+
+```bash
+jlpm run watch
+```
+
+### Step 4: Check the extension is working in JupyterLab
+
+- Open a new terminal, activate the Conda environment, and start JupyterLab.
+
+```bash
+conda activate jupyterlab_extension
+jupyter lab
+```
+
+- If everything has worked thus far, you should see `JupyterLab extension frontend-ext is activated!` when you open the browser console on the JupyterLab tab.
+
+### Step 5: Add a command to the extension
+
+- Open the `src/index.ts` file and modify the code to add a command to the extension.
+
+```typescript
+const plugin: JupyterFrontEndPlugin<void> = {
+  id: "fileglancer-frontend-ext:plugin",
+  description: "React-based frontend extension for the Fileglancer app.",
+  autoStart: true,
+  activate: (app: JupyterFrontEnd) => {
+    console.log("JupyterLab extension frontend-ext is activated!");
+
+    // extract the CommandRegistry from the app
+    const { commands } = app;
+    // define the new command's ID
+    const createReactWidget = "create-react-widget";
+
+    // the CommandRegistry has a method addCommand that takes the command ID and options
+    // the only required option is execute, which takes the function to be called when the command is executed
+    commands.addCommand(createReactWidget, {
+      label: "Create React Widget",
+      execute: () => {
+        console.log("Create React widget command executed");
+      },
+    });
+
+    // you can now call the command from anywhere in the extension by passing the command id to the execute method on the CommandRegistry
+    commands.execute(createReactWidget);
+  },
+};
+```
+
+- Save your changes and refresh JupyterLab in your browser. In the browser consol, you should now see two messages: `JupyterLab extension frontend-ext is activated!` and `Create React widget command executed`.
+
+### Step 6: Add the React widget file
+
+- Add the example React widget file from the JupyterLab extension examples repo to your extension's `src` directory.
+
+```typescript
+// widget.tsx
+import { ReactWidget } from "@jupyterlab/ui-components";
+
+import React, { useState } from "react";
+
+/**
+ * React component for a counter.
+ *
+ * @returns The React component
+ */
+const CounterComponent = (): JSX.Element => {
+  const [counter, setCounter] = useState(0);
+
+  return (
+    <div>
+      <p>You clicked {counter} times!</p>
+      <button
+        onClick={(): void => {
+          setCounter(counter + 1);
+        }}
+      >
+        Increment
+      </button>
+    </div>
+  );
+};
+
+/**
+ * A Counter Lumino Widget that wraps a CounterComponent.
+ */
+export class CounterWidget extends ReactWidget {
+  /**
+   * Constructs a new CounterWidget.
+   */
+  constructor() {
+    super();
+    this.addClass("jp-react-widget");
+  }
+
+  render(): JSX.Element {
+    return <CounterComponent />;
+  }
+}
+```
+
+- The `ReactWidget` wrapper comes from `@jupyterlab/ui-components` - add this as a dependency.
+
+```bash
+jlpm add @jupyterlab/ui-components
+```
+
+### Step 7: Modify index.ts to use the React widget
+
+- Following the example in the JupyterLab extension examples repo, first add the necessary imports.
+
+```typescript
+import {
+  JupyterFrontEnd,
+  JupyterFrontEndPlugin,
+} from "@jupyterlab/application";
+// The MainAreaWidget is a high-level JupyterLab widget that conventionally is used to enclose the Launcher or a notebook editor.
+import { MainAreaWidget } from "@jupyterlab/apputils";
+// The ILauncher interface is required to add the extension to the launcher.
+import { ILauncher } from "@jupyterlab/launcher";
+// A React icon to use for the extension launcher button.
+import { reactIcon } from "@jupyterlab/ui-components";
+// The React widget created in the previous step.
+import { CounterWidget } from "./widget";
+```
+
+- Install new imports as dependencies.
+
+```bash
+jlpm add @jupyterlab/apputils @jupyterlab/launcher
+```
+
+- Then refactor the command to use the CommandIDs registry used by the react-widget JupyterLab plugin.
+
+```typescript
+/**
+ * The command IDs used by the react-widget plugin.
+ */
+namespace CommandIDs {
+  export const createReactWidget = "create-react-widget";
+}
+
+const plugin: JupyterFrontEndPlugin<void> = {
+  id: "fileglancer-frontend-ext:plugin",
+  description: "React-based frontend extension for the Fileglancer app.",
+  autoStart: true,
+  activate: (app: JupyterFrontEnd) => {
+    console.log("JupyterLab extension frontend-ext is activated!");
+
+    const { commands } = app;
+
+    // change this to use the CommandIDs registry
+    const command = CommandIDs.createReactWidget;
+    // change the command id from "createReactWidget" to "command" to match the above line
+    commands.addCommand(command, {
+      label: "Create React Widget",
+      execute: () => {
+        console.log("Create React widget command executed");
+      },
+    });
+
+    // change the command id from "createReactWidget" to "command"
+    commands.execute(command);
+  },
+};
+```
+
+- Add the Launcher as an optional dependency to the extension.
+
+```typescript
+const plugin: JupyterFrontEndPlugin<void> = {
+  id: 'fileglancer-frontend-ext:plugin',
+  description: 'React-based frontend extension for the Fileglancer app.',
+  autoStart: true,
+  optional: [ILauncher],
+  ...
+}
+```
+
+- A few last modifications to create the launcher icon and launch the React widget in the main area of the app when the icon is clicked.
+
+```typescript
+...existing code...
+// Add the launcher to the activation of the extension
+ activate: (app: JupyterFrontEnd, launcher: ILauncher) => {
+    console.log('JupyterLab extension fileglancer-frontend-ext is activated!');
+    const { commands } = app;
+    const command = CommandIDs.createReactWidget;
+
+    commands.addCommand(command, {
+      // This will label the launcher icon
+      label: 'React Widget',
+      // Image for the launcher icon
+      icon: reactIcon,
+      execute: () => {
+        console.log('Create React widget command executed');
+        // Builds the MainAreaWidget with the CounterWidget inside
+        const content = new CounterWidget();
+        const widget = new MainAreaWidget<CounterWidget>({ content });
+        // Tab label
+        widget.title.label = 'React Widget';
+        // Tab icon
+        widget.title.icon = reactIcon;
+        // Adds the widget to the main area of the app when the launcher icon is clicked
+        app.shell.add(widget, 'main');
+      }
+    });
+
+    // Adds the command to the launcher
+    if (launcher) {
+      launcher.add({
+        command
+      });
+    }
+  }
+};
+```
+
+### Optional last step: Add CSS
+
+- [Copy the CSS](https://github.com/jupyterlab/extension-examples/blob/203393a2172599c27988c0e23b9a107b8cf9f9c5/react-widget/style/base.css) from the JupyterLab React extension example into your project.
